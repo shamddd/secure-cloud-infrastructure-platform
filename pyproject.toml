@@ -1,0 +1,92 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "secure-cloud-infrastructure-platform"
+version = "0.1.0"
+description = "Security-first control plane for authenticated container workload specifications"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Sham Satish Thakare" }]
+dependencies = [
+  "alembic>=1.16,<2",
+  "argon2-cffi>=23.1,<26",
+  "asyncpg>=0.30,<1",
+  "fastapi>=0.116,<1",
+  "opentelemetry-api>=1.36,<2",
+  "opentelemetry-exporter-otlp-proto-http>=1.36,<2",
+  "opentelemetry-instrumentation-fastapi>=0.57b0,<1",
+  "opentelemetry-instrumentation-sqlalchemy>=0.57b0,<1",
+  "opentelemetry-sdk>=1.36,<2",
+  "prometheus-client>=0.22,<1",
+  "pydantic>=2.11,<3",
+  "pydantic-settings>=2.10,<3",
+  "pyjwt[crypto]>=2.10,<3",
+  "python-multipart>=0.0.20,<1",
+  "sqlalchemy[asyncio]>=2.0.41,<3",
+  "uvicorn[standard]>=0.35,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "aiosqlite>=0.21,<1",
+  "bandit>=1.8,<2",
+  "httpx2>=2.10,<3",
+  "mypy>=1.17,<2",
+  "pip-audit>=2.9,<3",
+  "pytest>=8.4,<9",
+  "pytest-asyncio>=1.1,<2",
+  "pytest-cov>=6.2,<8",
+  "ruff>=0.12,<1",
+  "types-pyjwt>=1.7,<2",
+]
+
+[project.scripts]
+scip-bootstrap-admin = "secure_cloud_platform.cli:bootstrap_admin"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/secure_cloud_platform"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-config --strict-markers --cov=secure_cloud_platform --cov-report=term-missing --cov-fail-under=80"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = [
+  "postgres: requires SCIP_TEST_POSTGRES_URL and a reachable PostgreSQL server",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "ASYNC", "S"]
+ignore = ["S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S105", "S106"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+packages = ["secure_cloud_platform"]
+exclude = ["tests"]
+warn_unused_configs = true
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+skips = ["B101"]
+
+[tool.coverage.run]
+branch = true
+source = ["secure_cloud_platform"]
+
+[tool.coverage.report]
+exclude_also = [
+  "if TYPE_CHECKING:",
+  "if __name__ == .__main__.:",
+]
+show_missing = true

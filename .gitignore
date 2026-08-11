@@ -1,0 +1,40 @@
+.DS_Store
+.env
+.idea/
+.mypy_cache/
+.pip-audit-cache/
+.pytest_cache/
+.ruff_cache/
+.uv-cache/
+.venv/
+.vscode/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.coverage
+coverage.xml
+htmlcov/
+build/
+dist/
+
+# Local data and credentials
+*.db
+*.key
+*.pem
+*.p12
+credentials.json
+service-account*.json
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Helm packages
+*.tgz
