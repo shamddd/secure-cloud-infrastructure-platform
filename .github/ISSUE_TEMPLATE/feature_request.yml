@@ -1,0 +1,24 @@
+name: Feature request
+description: Propose a bounded platform capability.
+title: "[feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What operator or application problem needs solving?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe observable success, not a preferred implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: security
+    attributes:
+      label: Security and operational constraints
+      description: Note identity, data, availability, migration, and rollback implications.
