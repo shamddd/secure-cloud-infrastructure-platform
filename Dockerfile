@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM python:3.12.13-slim-bookworm AS builder
+FROM python:3.14.0-slim-bookworm AS builder
 
 ARG UV_VERSION=0.11.21
 ENV UV_CACHE_DIR=/tmp/uv-cache \
@@ -12,7 +12,7 @@ COPY pyproject.toml uv.lock README.md LICENSE ./
 COPY src ./src
 RUN uv sync --frozen --no-dev --no-editable
 
-FROM python:3.12.13-slim-bookworm AS runtime
+FROM python:3.14.0-slim-bookworm AS runtime
 
 LABEL org.opencontainers.image.title="Secure Cloud Infrastructure Platform" \
       org.opencontainers.image.description="Security-first desired-state control plane" \
