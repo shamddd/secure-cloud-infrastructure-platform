@@ -1,0 +1,7 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Known non-secret signing key used by the environment parsing regression test"
+regexTarget = "secret"
+regexes = ['''^an-environment-key-that-is-long-enough-1234$''']
