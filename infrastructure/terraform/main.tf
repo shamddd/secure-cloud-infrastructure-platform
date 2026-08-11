@@ -43,6 +43,12 @@ resource "google_compute_subnetwork" "gke" {
   network                  = google_compute_network.platform.id
   private_ip_google_access = true
 
+  log_config {
+    aggregation_interval = "INTERVAL_5_SEC"
+    flow_sampling        = 0.5
+    metadata             = "INCLUDE_ALL_METADATA"
+  }
+
   secondary_ip_range {
     range_name    = "pods"
     ip_cidr_range = var.pods_cidr
@@ -200,6 +206,7 @@ resource "google_container_node_pool" "platform" {
 
   node_config {
     machine_type    = var.node_machine_type
+    image_type      = "COS_CONTAINERD"
     service_account = google_service_account.gke_nodes.email
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
     labels          = local.labels
@@ -285,6 +292,31 @@ resource "google_sql_database_instance" "platform" {
 
     database_flags {
       name  = "cloudsql.iam_authentication"
+      value = "on"
+    }
+
+    database_flags {
+      name  = "log_temp_files"
+      value = "0"
+    }
+
+    database_flags {
+      name  = "log_connections"
+      value = "on"
+    }
+
+    database_flags {
+      name  = "log_disconnections"
+      value = "on"
+    }
+
+    database_flags {
+      name  = "log_lock_waits"
+      value = "on"
+    }
+
+    database_flags {
+      name  = "log_checkpoints"
       value = "on"
     }
 
