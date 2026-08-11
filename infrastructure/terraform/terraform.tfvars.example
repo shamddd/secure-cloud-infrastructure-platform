@@ -1,0 +1,15 @@
+project_id  = "replace-with-project-id"
+region      = "asia-south1"
+environment = "staging"
+
+master_authorized_networks = [
+  {
+    cidr_block   = "203.0.113.10/32"
+    display_name = "replace-with-vpn-egress"
+  }
+]
+
+labels = {
+  owner       = "platform-team"
+  cost_center = "replace-me"
+}

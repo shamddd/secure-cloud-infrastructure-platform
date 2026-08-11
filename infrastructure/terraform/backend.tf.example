@@ -1,0 +1,6 @@
+terraform {
+  backend "gcs" {
+    bucket = "replace-with-versioned-encrypted-state-bucket"
+    prefix = "secure-cloud-infrastructure-platform/staging"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["image", "runtimeSecretName", "config"],
+  "properties": {
+    "replicaCount": {"type": "integer", "minimum": 1},
+    "image": {
+      "type": "object",
+      "required": ["repository", "digest"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1},
+        "digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "pullPolicy": {"enum": ["Always", "IfNotPresent", "Never"]}
+      }
+    },
+    "runtimeSecretName": {"type": "string", "minLength": 1},
+    "config": {
+      "type": "object",
+      "required": ["environment", "allowedHosts"],
+      "properties": {
+        "environment": {"enum": ["staging", "production"]},
+        "allowedHosts": {"type": "string", "minLength": 1},
+        "accessTokenTtlSeconds": {"type": "integer", "minimum": 60, "maximum": 3600}
+      }
+    }
+  }
+}

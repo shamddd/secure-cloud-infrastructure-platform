@@ -1,0 +1,104 @@
+replicaCount: 2
+
+image:
+  repository: ""
+  digest: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+runtimeSecretName: scip-runtime
+
+config:
+  environment: production
+  jwtIssuer: secure-cloud-infrastructure-platform
+  jwtAudience: secure-cloud-platform-api
+  jwtKeyId: gke-hs256-v1
+  accessTokenTtlSeconds: 900
+  allowedHosts: api.example.com
+  corsOrigins: ""
+  docsEnabled: false
+  metricsEnabled: true
+  otlpTracesEndpoint: ""
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+  automountServiceAccountToken: false
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/path: /metrics
+  prometheus.io/port: "8000"
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: api.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: scip-ingress-tls
+      hosts: [api.example.com]
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 512Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+networkPolicy:
+  enabled: true
+  ingressNamespaces:
+    - ingress-nginx
+    - monitoring
+  egressRules:
+    - cidr: 10.0.0.0/8
+      port: 5432
+      protocol: TCP
+    - cidr: 10.0.0.0/8
+      port: 4318
+      protocol: TCP
+
+topologySpreadConstraints:
+  enabled: true
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

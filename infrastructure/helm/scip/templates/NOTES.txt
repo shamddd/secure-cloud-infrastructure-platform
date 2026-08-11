@@ -1,0 +1,11 @@
+The control-plane service is {{ include "scip.fullname" . }}.
+
+The chart does not create credentials. Before installation, create
+Secret/{{ .Values.runtimeSecretName }} with these keys:
+
+  SCIP_DATABASE_URL
+  SCIP_JWT_SIGNING_KEY
+
+Ingress TLS is terminated with the Secret referenced by ingress.tls. Configure
+encrypted PostgreSQL transport in SCIP_DATABASE_URL and restrict Secret access
+through your cluster's external secret delivery system.
