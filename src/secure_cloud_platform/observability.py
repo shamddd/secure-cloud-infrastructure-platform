@@ -6,8 +6,12 @@ from collections.abc import Awaitable, Callable
 from fastapi import FastAPI, Request, Response
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+try:
+    from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+    from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+except ImportError:
+    FastAPIInstrumentor = None  # type: ignore[assignment,misc]
+    SQLAlchemyInstrumentor = None  # type: ignore[assignment,misc]
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
@@ -58,8 +62,10 @@ def configure_tracing(app: FastAPI, database: Database, settings: Settings) -> N
         BatchSpanProcessor(OTLPSpanExporter(endpoint=settings.otlp_traces_endpoint))
     )
     trace.set_tracer_provider(provider)
-    FastAPIInstrumentor.instrument_app(app, tracer_provider=provider)
-    SQLAlchemyInstrumentor().instrument(
-        engine=database.engine.sync_engine,
-        tracer_provider=provider,
-    )
+    if FastAPIInstrumentor is not None:
+        FastAPIInstrumentor.instrument_app(app, tracer_provider=provider)
+    if SQLAlchemyInstrumentor is not None:
+        SQLAlchemyInstrumentor().instrument(
+            engine=database.engine.sync_engine,
+            tracer_provider=provider,
+        )

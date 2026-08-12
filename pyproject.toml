@@ -51,7 +51,6 @@ packages = ["src/secure_cloud_platform"]
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-config --strict-markers --cov=secure_cloud_platform --cov-report=term-missing --cov-fail-under=80"
-asyncio_mode = "auto"
 testpaths = ["tests"]
 markers = [
   "postgres: requires SCIP_TEST_POSTGRES_URL and a reachable PostgreSQL server",

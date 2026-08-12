@@ -9,7 +9,7 @@ from uuid import uuid4
 
 import jwt
 from argon2 import PasswordHasher
-from argon2.exceptions import InvalidHashError, VerificationError
+from argon2.exceptions import InvalidHash, VerificationError
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from secure_cloud_platform.config import Settings
@@ -61,6 +61,9 @@ class Principal:
     scopes: frozenset[Scope]
     token_id: str
 
+    def has_scope(self, scope: Scope) -> bool:
+        return scope in self.scopes
+
     def require(self, *, minimum_role: Role, scopes: frozenset[Scope]) -> None:
         if ROLE_LEVEL[self.role] < ROLE_LEVEL[minimum_role]:
             raise AuthorizationError("insufficient role")
@@ -86,7 +89,7 @@ class PasswordService:
     def verify(self, encoded: str, candidate: str) -> bool:
         try:
             return self._hasher.verify(encoded, candidate)
-        except (VerificationError, InvalidHashError):
+        except (VerificationError, InvalidHash, Exception):
             return False
 
     @staticmethod
