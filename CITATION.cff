@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software or research artifact, please cite it as below."
+authors:
+  - family-names: "Thakare"
+    given-names: "Sham Satish"
+title: "Compositional AST Invariant Verification for Declarative Container Workload Specifications"
+version: "1.0.0"
+date-released: "2026-08-13"
+repository-code: "https://github.com/shamddd/secure-cloud-infrastructure-platform"
+license: "Apache-2.0"
